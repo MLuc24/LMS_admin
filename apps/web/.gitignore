@@ -11,6 +11,8 @@
 # Testing
 /coverage
 
+
+
 # Build outputs
 /.next/
 /out/
@@ -34,6 +36,9 @@
 .DS_Store
 *.pem
 *.local
+.shared
+bts.jsonc
+.github/prompts
 
 # Logs
 npm-debug.log*

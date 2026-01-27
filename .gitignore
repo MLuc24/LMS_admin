@@ -48,3 +48,13 @@ coverage
 .cache
 tmp
 temp
+
+# Better-T-Stack
+.shared
+bts.jsonc
+.github/prompts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
