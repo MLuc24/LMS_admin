@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import type { AuthContextValue } from "@/lib/types/auth";
+import { getMediaUrl } from "@/lib/utils/media";
 
 import "../index.css";
 
@@ -135,7 +136,7 @@ function RootComponent() {
                       render={(props) => (
                         <Button variant="ghost" size="sm" className="gap-2" {...props}>
                           <Avatar className="h-7 w-7">
-                            <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
+                            <AvatarImage src={getMediaUrl(user?.avatarUrl)} alt={user?.displayName || "User"} />
                             <AvatarFallback>{getUserInitials()}</AvatarFallback>
                           </Avatar>
                           <span className="hidden sm:inline">{user?.displayName}</span>
@@ -145,7 +146,7 @@ function RootComponent() {
                     <DropdownMenuContent align="end" className="w-56">
                       <div className="flex items-center gap-3 px-2 py-2">
                         <Avatar className="h-9 w-9">
-                          <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
+                          <AvatarImage src={getMediaUrl(user?.avatarUrl)} alt={user?.displayName || "User"} />
                           <AvatarFallback>{getUserInitials()}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col gap-0.5">

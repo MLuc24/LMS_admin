@@ -14,6 +14,7 @@ export interface User {
   phone?: string
   displayName: string
   avatarAssetId?: string
+  avatarUrl?: string
   status: UserStatus
   roles?: UserRole[]
   lastLoginAt?: string
