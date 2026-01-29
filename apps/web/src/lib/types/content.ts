@@ -51,7 +51,7 @@ export interface UnitListResponse {
 
 // ============ SKILL TYPES ============
 
-export type SkillType = 'VOCABULARY' | 'GRAMMAR' | 'LISTENING' | 'SPEAKING' | 'READING' | 'WRITING' | 'MIXED'
+export type SkillType = 'vocabulary' | 'grammar' | 'listening' | 'speaking' | 'reading' | 'writing' | 'mixed'
 
 export interface Skill {
   skillId: string
@@ -88,7 +88,7 @@ export interface SkillListResponse {
 
 // ============ LESSON TYPES ============
 
-export type LessonType = 'PRACTICE' | 'REVIEW' | 'TEST' | 'CHECKPOINT'
+export type LessonType = 'practice' | 'story' | 'dialogue' | 'test' | 'review'
 
 export interface Lesson {
   lessonId: string
@@ -129,20 +129,21 @@ export interface LessonListResponse {
 // ============ CONSTANTS ============
 
 export const SKILL_TYPES: { value: SkillType; label: string; icon?: string }[] = [
-  { value: 'VOCABULARY', label: 'Vocabulary' },
-  { value: 'GRAMMAR', label: 'Grammar' },
-  { value: 'LISTENING', label: 'Listening' },
-  { value: 'SPEAKING', label: 'Speaking' },
-  { value: 'READING', label: 'Reading' },
-  { value: 'WRITING', label: 'Writing' },
-  { value: 'MIXED', label: 'Mixed' },
+  { value: 'vocabulary', label: 'Vocabulary' },
+  { value: 'grammar', label: 'Grammar' },
+  { value: 'listening', label: 'Listening' },
+  { value: 'speaking', label: 'Speaking' },
+  { value: 'reading', label: 'Reading' },
+  { value: 'writing', label: 'Writing' },
+  { value: 'mixed', label: 'Mixed' },
 ]
 
 export const LESSON_TYPES: { value: LessonType; label: string }[] = [
-  { value: 'PRACTICE', label: 'Practice' },
-  { value: 'REVIEW', label: 'Review' },
-  { value: 'TEST', label: 'Test' },
-  { value: 'CHECKPOINT', label: 'Checkpoint' },
+  { value: 'practice', label: 'Practice' },
+  { value: 'story', label: 'Story' },
+  { value: 'dialogue', label: 'Dialogue' },
+  { value: 'test', label: 'Test' },
+  { value: 'review', label: 'Review' },
 ]
 
 // Helper functions

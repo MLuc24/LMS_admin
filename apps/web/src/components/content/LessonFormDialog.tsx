@@ -55,7 +55,7 @@ export function LessonFormDialog({
   const isEditing = !!lesson
 
   const [languageId, setLanguageId] = useState<number>(1)
-  const [lessonType, setLessonType] = useState<LessonType>('PRACTICE')
+  const [lessonType, setLessonType] = useState<LessonType>('practice')
   const [title, setTitle] = useState('')
   const [introText, setIntroText] = useState('')
   const [estimatedMinutes, setEstimatedMinutes] = useState(5)
@@ -66,7 +66,7 @@ export function LessonFormDialog({
     if (open) {
       const loc = lesson?.localizations?.[0]
       setLanguageId(loc?.languageId || 1)
-      setLessonType(lesson?.lessonType || 'PRACTICE')
+      setLessonType(lesson?.lessonType || 'practice')
       setTitle(lesson?.title || loc?.title || '')
       setIntroText(loc?.introText || '')
       setEstimatedMinutes(lesson?.estimatedMinutes || 5)

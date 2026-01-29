@@ -53,7 +53,7 @@ export function SkillFormDialog({
   const isEditing = !!skill
 
   const [languageId, setLanguageId] = useState<number>(1)
-  const [skillType, setSkillType] = useState<SkillType>('VOCABULARY')
+  const [skillType, setSkillType] = useState<SkillType>('vocabulary')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -62,7 +62,7 @@ export function SkillFormDialog({
     if (open) {
       const loc = skill?.localizations?.[0]
       setLanguageId(loc?.languageId || 1)
-      setSkillType(skill?.skillType || 'VOCABULARY')
+      setSkillType(skill?.skillType || 'vocabulary')
       setTitle(skill?.title || loc?.title || '')
       setDescription(loc?.description || '')
       setErrors({})
