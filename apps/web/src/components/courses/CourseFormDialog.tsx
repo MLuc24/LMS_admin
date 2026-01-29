@@ -62,8 +62,8 @@ export function CourseFormDialog({
   const [targetLanguageId, setTargetLanguageId] = useState('')
   const [baseLanguageId, setBaseLanguageId] = useState('')
   const [levelId, setLevelId] = useState('')
-  const [courseCode, setCourseCode] = useState('')
-  const [coverAssetId, setCoverAssetId] = useState('')
+  const [coverImage, setCoverImage] = useState<File | null>(null)
+  const [coverImagePreview, setCoverImagePreview] = useState<string>('')
   const [localizations, setLocalizations] = useState<CourseLocalization[]>([{ ...emptyLocalization }])
 
   // Reset form when dialog opens/closes or course changes
@@ -74,21 +74,40 @@ export function CourseFormDialog({
         setTargetLanguageId(String(course.targetLanguageId))
         setBaseLanguageId(String(course.baseLanguageId))
         setLevelId(String(course.levelId))
-        setCourseCode(course.courseCode)
-        setCoverAssetId(course.coverAssetId || '')
+        setCoverImage(null)
+        setCoverImagePreview(course.coverUrl || '')
         setLocalizations(course.localizations.length > 0 ? course.localizations : [{ ...emptyLocalization }])
       } else {
         // Create mode - reset form
         setTargetLanguageId('')
         setBaseLanguageId('')
         setLevelId('')
-        setCourseCode('')
-        setCoverAssetId('')
+        setCoverImage(null)
+        setCoverImagePreview('')
         setLocalizations([{ ...emptyLocalization }])
       }
       setErrors({})
     }
   }, [open, course])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setErrors({ ...errors, coverImage: 'Please select an image file' })
+        return
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors({ ...errors, coverImage: 'Image size must be less than 5MB' })
+        return
+      }
+      setCoverImage(file)
+      setCoverImagePreview(URL.createObjectURL(file))
+      setErrors({ ...errors, coverImage: '' })
+    }
+  }
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -96,10 +115,6 @@ export function CourseFormDialog({
     if (!targetLanguageId) newErrors.targetLanguageId = 'Target language is required'
     if (!baseLanguageId) newErrors.baseLanguageId = 'Base language is required'
     if (!levelId) newErrors.levelId = 'Level is required'
-    if (!courseCode) newErrors.courseCode = 'Course code is required'
-    if (courseCode && !/^[A-Z0-9-]+$/.test(courseCode)) {
-      newErrors.courseCode = 'Use uppercase letters, numbers, and hyphens only'
-    }
 
     if (!isEditing) {
       // Validate localizations for create mode
@@ -124,18 +139,18 @@ export function CourseFormDialog({
           targetLanguageId: Number(targetLanguageId),
           baseLanguageId: Number(baseLanguageId),
           levelId: Number(levelId),
-          courseCode,
-          coverAssetId: coverAssetId || undefined,
         })
       } else {
         const validLocalizations = localizations.filter((l) => l.languageId && l.title)
+        
+        // TODO: Handle cover image upload
+        // For now, we'll pass the data without image
         await onCreate({
           targetLanguageId: Number(targetLanguageId),
           baseLanguageId: Number(baseLanguageId),
           levelId: Number(levelId),
-          courseCode,
-          coverAssetId: coverAssetId || undefined,
           localizations: validLocalizations,
+          // coverImage will be handled separately when upload is implemented
         })
       }
       onOpenChange(false)
@@ -178,30 +193,34 @@ export function CourseFormDialog({
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-6 py-4">
-            {/* Basic Info */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="courseCode">Course Code *</Label>
-                <Input
-                  id="courseCode"
-                  value={courseCode}
-                  onChange={(e) => setCourseCode(e.target.value.toUpperCase())}
-                  placeholder="EN-A1-001"
-                  className={errors.courseCode ? 'border-destructive' : ''}
-                />
-                {errors.courseCode && (
-                  <p className="text-xs text-destructive">{errors.courseCode}</p>
+            {/* Cover Image Upload */}
+            <div className="space-y-2">
+              <Label htmlFor="coverImage">Cover Image</Label>
+              <div className="flex items-start gap-4">
+                {coverImagePreview && (
+                  <div className="relative h-32 w-48 shrink-0 overflow-hidden rounded-lg border">
+                    <img
+                      src={coverImagePreview}
+                      alt="Cover preview"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="coverAssetId">Cover Image Asset ID</Label>
-                <Input
-                  id="coverAssetId"
-                  value={coverAssetId}
-                  onChange={(e) => setCoverAssetId(e.target.value)}
-                  placeholder="Optional"
-                />
+                <div className="flex-1">
+                  <Input
+                    id="coverImage"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className={errors.coverImage ? 'border-destructive' : ''}
+                  />
+                  {errors.coverImage && (
+                    <p className="mt-1 text-xs text-destructive">{errors.coverImage}</p>
+                  )}
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Recommended: 1200x630px, max 5MB (JPG, PNG, WebP)
+                  </p>
+                </div>
               </div>
             </div>
 

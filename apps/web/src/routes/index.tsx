@@ -3,7 +3,7 @@
  * Welcome page for unauthenticated users, Dashboard for authenticated users
  */
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { 
   Users, 

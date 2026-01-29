@@ -132,11 +132,14 @@ export function CourseTable({
                       <span className="sr-only">Open menu</span>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <Link to="/courses/$courseId" params={{ courseId: course.courseId }}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </Link>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          // Navigate programmatically
+                          window.location.href = `/courses/${course.courseId}`
+                        }}
+                      >
+                        <Eye className="mr-2 h-4 w-4" />
+                        View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onEdit(course)}>
                         <Edit className="mr-2 h-4 w-4" />

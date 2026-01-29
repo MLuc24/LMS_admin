@@ -48,14 +48,20 @@ export const coursesApi = {
    * Create a new course
    */
   createCourse: async (data: CreateCourseRequest): Promise<Course> => {
-    return apiClient.post<Course>('/admin/courses', data)
+    // Remove coverImage from request (not yet implemented on backend)
+    const { coverImage, ...requestData } = data
+    console.log('Creating course with data:', requestData)
+    console.log('Removed coverImage:', coverImage ? 'yes' : 'no')
+    return apiClient.post<Course>('/admin/courses', requestData)
   },
 
   /**
    * Update a course
    */
   updateCourse: async (courseId: string, data: UpdateCourseRequest): Promise<Course> => {
-    return apiClient.put<Course>(`/admin/courses/${courseId}`, data)
+    // Remove coverImage from request (not yet implemented on backend)
+    const { coverImage, ...requestData } = data
+    return apiClient.put<Course>(`/admin/courses/${courseId}`, requestData)
   },
 
   /**

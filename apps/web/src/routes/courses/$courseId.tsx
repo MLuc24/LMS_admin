@@ -38,6 +38,7 @@ import {
 } from '@/components/courses'
 
 import { coursesApi } from '@/lib/api/courses'
+import { unitsApi } from '@/lib/api/units'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import {
   type Course,
@@ -45,6 +46,8 @@ import {
   getLanguageName,
   getLevelName,
 } from '@/lib/types/course'
+import type { Unit } from '@/lib/types/content'
+import { ContentTree } from '@/components/content'
 
 export const Route = createFileRoute('/courses/$courseId')({
   component: CourseDetailPage,
@@ -71,6 +74,10 @@ function CourseDetailPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
+  // Units state
+  const [units, setUnits] = useState<Unit[]>([])
+  const [isLoadingUnits, setIsLoadingUnits] = useState(false)
+
   const fetchCourse = useCallback(async () => {
     if (!isAuthenticated) return
 
@@ -86,9 +93,30 @@ function CourseDetailPage() {
     }
   }, [isAuthenticated, courseId])
 
+  const fetchUnits = useCallback(async () => {
+    if (!course?.currentVersionId) return
+
+    setIsLoadingUnits(true)
+    try {
+      const response = await unitsApi.getUnits(course.currentVersionId)
+      setUnits(response.data)
+    } catch (error) {
+      console.error('Failed to fetch units:', error)
+      toast.error('Failed to load units')
+    } finally {
+      setIsLoadingUnits(false)
+    }
+  }, [course?.currentVersionId])
+
   useEffect(() => {
     fetchCourse()
   }, [fetchCourse])
+
+  useEffect(() => {
+    if (course?.currentVersionId) {
+      fetchUnits()
+    }
+  }, [course?.currentVersionId, fetchUnits])
 
   const handleRefresh = () => {
     setIsRefreshing(true)
@@ -335,17 +363,39 @@ function CourseDetailPage() {
             </TabsContent>
 
             <TabsContent value="units" className="mt-4">
-              <div className="flex min-h-[200px] flex-col items-center justify-center text-center">
-                <Layers className="h-12 w-12 text-muted-foreground" />
-                <h3 className="mt-4 font-semibold">Units Management</h3>
-                <p className="text-sm text-muted-foreground">
-                  Unit management will be implemented in the next phase.
-                </p>
-                <Button size="sm" className="mt-4" disabled>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Unit
-                </Button>
-              </div>
+              {course.currentVersionId ? (
+                <ContentTree
+                  courseVersionId={course.currentVersionId}
+                  units={units}
+                  isLoading={isLoadingUnits}
+                  onRefresh={fetchUnits}
+                />
+              ) : (
+                <div className="flex min-h-[200px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+                  <Layers className="h-12 w-12 text-muted-foreground" />
+                  <h3 className="mt-4 font-semibold">No Course Version</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    This course doesn't have a version yet.
+                  </p>
+                  <div className="mt-4 rounded-lg bg-muted p-4 text-left">
+                    <p className="text-sm font-medium">To fix this issue:</p>
+                    <ol className="mt-2 list-inside list-decimal space-y-1 text-sm text-muted-foreground">
+                      <li>Delete this course using the "Delete Course" button in Settings tab</li>
+                      <li>Create a new course - it will automatically have a version</li>
+                      <li>Or check the database to see if a version exists but isn't linked</li>
+                    </ol>
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <Button variant="outline" onClick={() => {
+                      const tabsList = document.querySelector('[role="tablist"]')
+                      const settingsTab = tabsList?.querySelector('[value="settings"]') as HTMLElement
+                      settingsTab?.click()
+                    }}>
+                      Go to Settings
+                    </Button>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="settings" className="mt-4">

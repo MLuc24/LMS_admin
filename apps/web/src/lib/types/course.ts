@@ -23,6 +23,7 @@ export interface Course {
   localizations: CourseLocalization[]
   title?: string
   description?: string
+  currentVersionId?: string
   createdAt: string
   updatedAt: string
 }
@@ -44,8 +45,8 @@ export interface CreateCourseRequest {
   targetLanguageId: number
   baseLanguageId: number
   levelId: number
-  courseCode: string
-  coverAssetId?: string
+  courseCode?: string // Optional - auto-generated if not provided
+  coverImage?: File // Cover image file to upload
   localizations?: CourseLocalization[]
 }
 
@@ -54,7 +55,7 @@ export interface UpdateCourseRequest {
   baseLanguageId?: number
   levelId?: number
   courseCode?: string
-  coverAssetId?: string
+  coverImage?: File // Cover image file to upload
 }
 
 export interface AddLocalizationRequest {
